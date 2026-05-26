@@ -1,510 +1,487 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Attendance Dashboard</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://unpkg.com/framer-motion@12.40.0/dist/framer-motion.js"></script>
-    <script src="https://unpkg.com/lucide-react@1.16.0/dist/umd/lucide-react.min.js"></script>
-    <script src="https://unpkg.com/recharts@3.8.1/umd/Recharts.min.js"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tableau de bord de présence</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        :root {
-            --green: #70c83d;
-            --green2: #92e04f;
-            --orange: #f5a623;
-            --red: #ef4d45;
-            --blue: #5e7ce2;
-            --sky: #62b6ff;
-        }
-        
-        body {
-            background-color: #03070d;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            color: white;
-        }
-        
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-        }
-        
-        @media (min-width: 768px) {
-            .stats-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-        
-        @media (min-width: 1280px) {
-            .stats-grid {
-                grid-template-columns: repeat(6, 1fr);
-            }
-        }
-        
-        .rounded-3xl { border-radius: 1.5rem; }
-        .rounded-2xl { border-radius: 1rem; }
-        .rounded-xl { border-radius: 0.75rem; }
-        
-        .border-white\/10 { border-color: rgba(255, 255, 255, 0.1); }
-        .bg-\[\#081622\]\/90 { background-color: rgba(8, 22, 34, 0.9); }
-        .bg-\[\#06111b\]\/95 { background-color: rgba(6, 17, 27, 0.95); }
-        .bg-\[\#06111b\]\/80 { background-color: rgba(6, 17, 27, 0.8); }
-        .bg-\[\#06101a\] { background-color: #06101a; }
-        .bg-white\/5 { background-color: rgba(255, 255, 255, 0.05); }
-        .bg-white\/10 { background-color: rgba(255, 255, 255, 0.1); }
-        .bg-black\/20 { background-color: rgba(0, 0, 0, 0.2); }
-        
-        .shadow-2xl { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
-        .shadow-xl { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
-        
-        .shadow-black\/20 { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2); }
-        .shadow-black\/30 { box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3); }
-        
-        .text-white\/75 { color: rgba(255, 255, 255, 0.75); }
-        .text-white\/60 { color: rgba(255, 255, 255, 0.6); }
-        .text-white\/70 { color: rgba(255, 255, 255, 0.7); }
-        .text-white\/80 { color: rgba(255, 255, 255, 0.8); }
-        .text-white\/50 { color: rgba(255, 255, 255, 0.5); }
-        .text-white\/40 { color: rgba(255, 255, 255, 0.4); }
-        
-        .bg-lime-400\/15 { background-color: rgba(163, 230, 53, 0.15); }
-        .bg-lime-500\/15 { background-color: rgba(132, 204, 22, 0.15); }
-        .bg-red-400\/15 { background-color: rgba(248, 113, 113, 0.15); }
-        .bg-orange-400\/15 { background-color: rgba(255, 138, 76, 0.15); }
-        
-        .bg-lime-400\/10 { background-color: rgba(163, 230, 53, 0.1); }
-        .bg-lime-500\/10 { background-color: rgba(132, 204, 22, 0.1); }
-        
-        .border-lime-400\/30 { border-color: rgba(163, 230, 53, 0.3); }
-        
-        .border-orange-400\/20 { border-color: rgba(255, 138, 76, 0.2); }
-        .bg-orange-400\/10 { background-color: rgba(255, 138, 76, 0.1); }
-        
-        .hover\:bg-white\/5:hover { background-color: rgba(255, 255, 255, 0.05); }
-        .hover\:bg-lime-400\/20:hover { background-color: rgba(163, 230, 53, 0.2); }
-        .hover\:bg-lime-500\/20:hover { background-color: rgba(132, 204, 22, 0.2); }
-        .hover\:bg-red-400\/10:hover { background-color: rgba(248, 113, 113, 0.1); }
-        
-        .max-w-\[1600px\] { max-width: 1600px; }
-        
-        .text-lime-400 { color: #a3e635; }
-        .text-lime-300 { color: #bef264; }
-        .text-red-300 { color: #fca5a5; }
-        .text-orange-300 { color: #fdba74; }
-        .text-orange-200 { color: #fed7aa; }
-        
-        .bg-lime-500 { background-color: #84cc16; }
-        
-        .hover\:bg-lime-400:hover { background-color: #a3e635; }
-        
-        .bg-gradient-radial {
-            background-image: radial-gradient(circle at top left, rgba(112, 200, 61, 0.2), transparent 30%), 
-                             radial-gradient(circle at 85% 10%, rgba(94, 124, 226, 0.14), transparent 25%);
-            pointer-events: none;
-            position: fixed;
-            inset: 0;
-        }
-        
-        .sticky-table-header {
-            position: sticky;
-            top: 0;
-            background-color: #0b1a28;
-        }
+      body { margin: 0; background: #03070d; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+      .loader { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; background: #03070d; z-index: 9999; flex-direction: column; gap: 20px; }
+      .loader-spinner { width: 60px; height: 60px; border: 5px solid rgba(255,255,255,0.1); border-top-color: #84cc16; border-radius: 50%; animation: spin 1s linear infinite; }
+      .loader-text { color: rgba(255,255,255,0.6); font-size: 14px; }
+      @keyframes spin { to { transform: rotate(360deg); } }
     </style>
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.3.1",
+        "react/jsx-runtime": "https://esm.sh/react@18.3.1/jsx-runtime",
+        "react-dom/client": "https://esm.sh/react-dom@18.3.1/client",
+        "lucide-react": "https://esm.sh/lucide-react@0.460.0?deps=react@18.3.1",
+        "recharts": "https://esm.sh/recharts@2.12.7?deps=react@18.3.1,react-dom@18.3.1"
+      }
+    }
+    </script>
 </head>
 <body>
+    <div id="loader" class="loader">
+      <div class="loader-spinner"></div>
+      <div class="loader-text">Chargement du tableau de bord...</div>
+    </div>
     <div id="root"></div>
-    
-    <script type="text/babel">
-        const { useState, useMemo } = React;
-        const { motion } = FramerMotion;
-        const { 
-            Users, UserCheck, UserX, Clock3, Timer, PieChart, CalendarDays, Filter, 
-            Home, Building2, ClipboardList, BarChart3, Download, Plus, Search, 
-            Trash2, Moon, FileSpreadsheet 
-        } = LucideReact;
-        const {
-            BarChart, Bar, LineChart, Line, PieChart: RPieChart, Pie, Cell,
-            ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid
-        } = Recharts;
-        
-        // Données statiques
-        const employees = [
-            { id: 1, name: "Aina Rakoto", dept: "IT" },
-            { id: 2, name: "Miora Rabe", dept: "Finance" },
-            { id: 3, name: "Tahina Andry", dept: "RH" },
-            { id: 4, name: "Lova Nantenaina", dept: "Marketing" },
-            { id: 5, name: "Faly Randria", dept: "Ventes" },
-            { id: 6, name: "Soa Ravel", dept: "Opérations" },
-            { id: 7, name: "Hasina Rami", dept: "Logistique" },
-            { id: 8, name: "Noro Hery", dept: "Service client" },
-            { id: 9, name: "Tiana Solo", dept: "Achats" },
-            { id: 10, name: "Joël Rasoanaivo", dept: "IT" },
-            { id: 11, name: "Prisca Mamy", dept: "Finance" },
-            { id: 12, name: "Fenitra Nia", dept: "RH" }
-        ];
-        
-        const days = Array.from({ length: 31 }, (_, index) => index + 1);
-        
-        const initialAttendance = employees.flatMap((employee, employeeIndex) =>
-            days.map((day) => {
-                const seed = (employeeIndex * 11 + day * 7) % 100;
-                const absent = seed < 9;
-                const late = !absent && seed >= 9 && seed < 28;
-                const leave = absent && seed % 3 === 0;
-                const lateMinutes = late ? 8 + ((employeeIndex + day) * 7) % 55 : 0;
-                const overtime = !absent ? (((employeeIndex + day) % 5) * 0.5).toFixed(1) : 0;
-                return {
-                    id: `${employee.id}-${day}`,
-                    date: `2026-05-${String(day).padStart(2, "0")}`,
-                    day,
-                    employeeId: employee.id,
-                    name: employee.name,
-                    dept: employee.dept,
-                    status: absent ? "Absent" : late ? "En retard" : "Présent",
-                    arrival: absent ? "—" : late ? "08:28" : "07:55",
-                    departure: absent ? "—" : "17:00",
-                    hours: absent ? 0 : late ? 8.1 : 8.8,
-                    lateMinutes,
-                    overtime: Number(overtime),
-                    leaveType: leave ? ["Maladie", "Congé annuel", "Personnel", "Casual"][(employeeIndex + day) % 4] : "—",
-                };
-            })
+
+    <script type="text/babel" data-type="module" data-presets="env,react">
+      import React, { useMemo, useState } from "react";
+      import { createRoot } from "react-dom/client";
+      import {
+        Users, UserCheck, UserX, Clock3, Timer, PieChart as PieIcon,
+        CalendarDays, Filter, Home, Building2, ClipboardList, BarChart3,
+        Download, Plus, Search, Trash2, Moon, FileSpreadsheet,
+      } from "lucide-react";
+      import {
+        BarChart, Bar, LineChart, Line, PieChart as RPieChart, Pie, Cell,
+        ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid,
+      } from "recharts";
+
+      const employees = [
+        { id: 1, name: "Aina Rakoto", dept: "IT" },
+        { id: 2, name: "Miora Rabe", dept: "Finance" },
+        { id: 3, name: "Tahina Andry", dept: "RH" },
+        { id: 4, name: "Lova Nantenaina", dept: "Marketing" },
+        { id: 5, name: "Faly Randria", dept: "Ventes" },
+        { id: 6, name: "Soa Ravel", dept: "Opérations" },
+        { id: 7, name: "Hasina Rami", dept: "Logistique" },
+        { id: 8, name: "Noro Hery", dept: "Service client" },
+        { id: 9, name: "Tiana Solo", dept: "Achats" },
+        { id: 10, name: "Joël Rasoanaivo", dept: "IT" },
+        { id: 11, name: "Prisca Mamy", dept: "Finance" },
+        { id: 12, name: "Fenitra Nia", dept: "RH" },
+      ];
+
+      const days = Array.from({ length: 31 }, (_, i) => i + 1);
+
+      const initialAttendance = employees.flatMap((employee, ei) =>
+        days.map((day) => {
+          const seed = (ei * 11 + day * 7) % 100;
+          const absent = seed < 9;
+          const late = !absent && seed >= 9 && seed < 28;
+          const leave = absent && seed % 3 === 0;
+          const lateMinutes = late ? 8 + ((ei + day) * 7) % 55 : 0;
+          const overtime = !absent ? (((ei + day) % 5) * 0.5).toFixed(1) : 0;
+          return {
+            id: `${employee.id}-${day}`,
+            date: `2026-05-${String(day).padStart(2, "0")}`,
+            day,
+            employeeId: employee.id,
+            name: employee.name,
+            dept: employee.dept,
+            status: absent ? "Absent" : late ? "En retard" : "Présent",
+            arrival: absent ? "—" : late ? "08:28" : "07:55",
+            departure: absent ? "—" : "17:00",
+            hours: absent ? 0 : late ? 8.1 : 8.8,
+            lateMinutes,
+            overtime: Number(overtime),
+            leaveType: leave ? ["Maladie", "Congé annuel", "Personnel", "Casual"][(ei + day) % 4] : "—",
+          };
+        })
+      );
+
+      const departments = ["Tous", "IT", "Finance", "RH", "Marketing", "Ventes", "Opérations", "Logistique", "Service client", "Achats"];
+      const statuses = ["Tous", "Présent", "Absent", "En retard"];
+      const leaveTypes = ["Tous", "Maladie", "Congé annuel", "Personnel", "Casual"];
+
+      const colors = {
+        green: "#70c83d", green2: "#92e04f", orange: "#f5a623",
+        red: "#ef4d45", blue: "#5e7ce2", sky: "#62b6ff",
+      };
+
+      const formatNumber = (v) => new Intl.NumberFormat("fr-FR").format(v);
+
+      function StatCard({ title, value, subtitle, icon: Icon, tone = "green" }) {
+        const toneMap = { green: colors.green, orange: colors.orange, red: colors.red, blue: colors.blue };
+        return (
+          <div className="rounded-2xl border border-white/10 bg-[#081622]/90 p-5 shadow-2xl shadow-black/20">
+            <div className="flex items-center gap-4">
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-3" style={{ color: toneMap[tone] }}>
+                <Icon size={34} strokeWidth={2.4} />
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-white/75">{title}</p>
+                <p className="mt-1 text-4xl font-black tracking-tight text-white">{value}</p>
+              </div>
+            </div>
+            <p className="mt-4 text-sm text-white/60">{subtitle}</p>
+          </div>
         );
-        
-        const departments = ["Tous", "IT", "Finance", "RH", "Marketing", "Ventes", "Opérations", "Logistique", "Service client", "Achats"];
-        const statuses = ["Tous", "Présent", "Absent", "En retard"];
-        const leaveTypes = ["Tous", "Maladie", "Congé annuel", "Personnel", "Casual"];
-        
-        const colors = {
-            green: "#70c83d",
-            green2: "#92e04f",
-            orange: "#f5a623",
-            red: "#ef4d45",
-            blue: "#5e7ce2",
-            sky: "#62b6ff"
+      }
+
+      function Panel({ title, children, className = "" }) {
+        return (
+          <div className={`rounded-2xl border border-white/10 bg-[#081622]/90 p-5 shadow-xl shadow-black/20 ${className}`}>
+            <h3 className="mb-4 text-lg font-black uppercase tracking-tight text-white">{title}</h3>
+            {children}
+          </div>
+        );
+      }
+
+      function Select({ label, value, onChange, options }) {
+        return (
+          <label className="block">
+            <span className="mb-2 block text-sm font-medium text-white/80">{label}</span>
+            <select
+              value={value}
+              onChange={(e) => onChange(e.target.value)}
+              className="w-full rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-sm text-white outline-none transition focus:border-lime-400"
+            >
+              {options.map((o) => <option key={o} value={o}>{o}</option>)}
+            </select>
+          </label>
+        );
+      }
+
+      function exportCsv(rows) {
+        const headers = ["Date", "Employé", "Département", "Statut", "Arrivée", "Départ", "Heures", "Retard min", "Heures sup", "Type congé"];
+        const csv = [
+          headers.join(","),
+          ...rows.map((r) => [r.date, r.name, r.dept, r.status, r.arrival, r.departure, r.hours, r.lateMinutes, r.overtime, r.leaveType]
+            .map((v) => `"${String(v).replaceAll('"', '""')}"`).join(",")),
+        ].join("\n");
+        const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "presence-employes.csv";
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+
+      function App() {
+        const [records, setRecords] = useState(initialAttendance);
+        const [department, setDepartment] = useState("Tous");
+        const [status, setStatus] = useState("Tous");
+        const [leaveType, setLeaveType] = useState("Tous");
+        const [search, setSearch] = useState("");
+        const [newRecord, setNewRecord] = useState({
+          date: "2026-05-31", name: "", dept: "IT", status: "Présent",
+          lateMinutes: 0, hours: 8, overtime: 0, leaveType: "—",
+        });
+
+        const filtered = useMemo(() => records.filter((row) => {
+          const byDept = department === "Tous" || row.dept === department;
+          const byStatus = status === "Tous" || row.status === status;
+          const byLeave = leaveType === "Tous" || row.leaveType === leaveType;
+          const bySearch = row.name.toLowerCase().includes(search.toLowerCase()) || row.dept.toLowerCase().includes(search.toLowerCase());
+          return byDept && byStatus && byLeave && bySearch;
+        }), [records, department, status, leaveType, search]);
+
+        const metrics = useMemo(() => {
+          const uniqueEmployees = new Set(filtered.map((r) => r.name)).size;
+          const present = filtered.filter((r) => r.status === "Présent" || r.status === "En retard").length;
+          const absent = filtered.filter((r) => r.status === "Absent").length;
+          const late = filtered.filter((r) => r.status === "En retard").length;
+          const overtime = filtered.reduce((s, r) => s + r.overtime, 0);
+          const attendanceRate = present + absent ? (present / (present + absent)) * 100 : 0;
+          const totalLateMinutes = filtered.reduce((s, r) => s + Number(r.lateMinutes), 0);
+          return { uniqueEmployees, present, absent, late, overtime, attendanceRate, totalLateMinutes };
+        }, [filtered]);
+
+        const dailyTrend = useMemo(() => days.map((day) => {
+          const rows = filtered.filter((r) => r.day === day);
+          return {
+            day: `${day} Mai`,
+            present: rows.filter((r) => r.status === "Présent" || r.status === "En retard").length,
+            absent: rows.filter((r) => r.status === "Absent").length,
+            late: rows.filter((r) => r.status === "En retard").length,
+            lateMinutes: rows.reduce((s, r) => s + Number(r.lateMinutes), 0),
+          };
+        }), [filtered]);
+
+        const departmentData = useMemo(() => departments.filter((d) => d !== "Tous").map((dept) => {
+          const rows = filtered.filter((r) => r.dept === dept);
+          const present = rows.filter((r) => r.status === "Présent" || r.status === "En retard").length;
+          const absent = rows.filter((r) => r.status === "Absent").length;
+          return { dept, rate: present + absent ? Math.round((present / (present + absent)) * 100) : 0 };
+        }).filter((r) => r.rate > 0).sort((a, b) => b.rate - a.rate), [filtered]);
+
+        const presentAbsent = [
+          { name: "Présent", value: metrics.present, color: colors.green },
+          { name: "Absent", value: metrics.absent, color: colors.red },
+        ];
+
+        const leaveData = useMemo(() => leaveTypes.filter((t) => t !== "Tous").map((type, i) => ({
+          name: type,
+          value: filtered.filter((r) => r.leaveType === type).length,
+          color: [colors.sky, colors.green, colors.orange, colors.red][i],
+        })).filter((r) => r.value > 0), [filtered]);
+
+        const addRecord = () => {
+          if (!newRecord.name.trim()) return;
+          const row = {
+            ...newRecord,
+            id: `custom-${Date.now()}`,
+            employeeId: Date.now(),
+            day: Number(newRecord.date.slice(-2)),
+            arrival: newRecord.status === "Absent" ? "—" : newRecord.lateMinutes > 0 ? "08:20" : "07:55",
+            departure: newRecord.status === "Absent" ? "—" : "17:00",
+            lateMinutes: Number(newRecord.lateMinutes),
+            hours: newRecord.status === "Absent" ? 0 : Number(newRecord.hours),
+            overtime: Number(newRecord.overtime),
+            leaveType: newRecord.status === "Absent" ? newRecord.leaveType : "—",
+          };
+          setRecords((c) => [row, ...c]);
+          setNewRecord({ ...newRecord, name: "", lateMinutes: 0, hours: 8, overtime: 0 });
         };
-        
-        const formatNumber = (value) => new Intl.NumberFormat("fr-FR").format(value);
-        
-        const StatCard = ({ title, value, subtitle, icon: Icon, tone = "green" }) => {
-            const toneMap = {
-                green: colors.green,
-                orange: colors.orange,
-                red: colors.red,
-                blue: colors.blue,
-            };
-            return (
-                <div className="rounded-2xl border border-white/10 bg-[#081622]/90 p-5 shadow-2xl shadow-black/20">
-                    <div className="flex items-center gap-4">
-                        <div className="rounded-2xl border border-white/10 bg-white/5 p-3" style={{ color: toneMap[tone] }}>
-                            {React.createElement(Icon, { size: 34, strokeWidth: 2.4 })}
-                        </div>
-                        <div>
-                            <p className="text-xs font-semibold uppercase tracking-wider text-white/75">{title}</p>
-                            <p className="mt-1 text-4xl font-black tracking-tight text-white">{value}</p>
-                            <p className="mt-4 text-sm text-white/60">{subtitle}</p>
-                        </div>
-                    </div>
+
+        const removeRecord = (id) => setRecords((c) => c.filter((r) => r.id !== id));
+
+        return (
+          <div className="min-h-screen bg-[#03070d] p-4 font-sans text-white md:p-6">
+            <div className="pointer-events-none fixed inset-0 bg-[radial-gradient(circle_at_top_left,rgba(112,200,61,0.20),transparent_30%),radial-gradient(circle_at_85%_10%,rgba(94,124,226,0.14),transparent_25%)]" />
+
+            <div className="relative mx-auto grid max-w-[1600px] gap-5 xl:grid-cols-[280px_1fr]">
+              <aside className="rounded-3xl border border-white/10 bg-[#06111b]/95 p-5 shadow-2xl shadow-black/30">
+                <div className="flex items-center gap-3">
+                  <div className="rounded-2xl bg-lime-500/15 p-3 text-lime-400">
+                    <Users size={42} />
+                  </div>
+                  <div>
+                    <h1 className="text-2xl font-black leading-none tracking-tight">EMPLOYEE</h1>
+                    <h2 className="text-2xl font-black leading-none tracking-tight text-lime-400">ATTENDANCE</h2>
+                    <p className="mt-1 text-xs font-bold tracking-[0.45em] text-white/70">DASHBOARD</p>
+                  </div>
                 </div>
-            );
-        };
-        
-        const Panel = ({ title, children, className = "" }) => {
-            return (
-                <div className={\`rounded-2xl border border-white/10 bg-[#081622]/90 p-5 shadow-xl shadow-black/20 \${className}\`}>
-                    <h3 className="mb-4 text-lg font-black uppercase tracking-tight text-white">{title}</h3>
-                    {children}
-                </div>
-            );
-        };
-        
-        const Select = ({ label, value, onChange, options }) => {
-            return (
-                <label className="block">
-                    <span className="mb-2 block text-sm font-medium text-white/80">{label}</span>
-                    <select
-                        value={value}
-                        onChange={(event) => onChange(event.target.value)}
-                        className="w-full rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-sm text-white outline-none transition focus:border-lime-400"
+
+                <nav className="mt-8 space-y-2">
+                  {[[Home, "Overview"], [CalendarDays, "Daily Attendance"], [Users, "Employees"],
+                    [Building2, "Departments"], [ClipboardList, "Leave Analytics"], [BarChart3, "Reports"]].map(([Icon, label], i) => (
+                    <button key={label} className={`flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left font-semibold transition ${i === 0 ? "bg-lime-500 text-white" : "text-white/80 hover:bg-white/5"}`}>
+                      <Icon size={22} /> {label}
+                    </button>
+                  ))}
+                </nav>
+
+                <div className="mt-8 border-t border-white/10 pt-6">
+                  <h3 className="mb-4 text-lg font-black text-lime-400">Filtres</h3>
+                  <div className="space-y-4">
+                    <Select label="Département" value={department} onChange={setDepartment} options={departments} />
+                    <Select label="Statut" value={status} onChange={setStatus} options={statuses} />
+                    <Select label="Type de congé" value={leaveType} onChange={setLeaveType} options={leaveTypes} />
+                    <button
+                      onClick={() => { setDepartment("Tous"); setStatus("Tous"); setLeaveType("Tous"); setSearch(""); }}
+                      className="flex w-full items-center justify-center gap-2 rounded-xl border border-lime-400/30 bg-lime-400/10 px-4 py-3 font-bold text-lime-300 transition hover:bg-lime-400/20"
                     >
-                        {options.map((option) => (
-                            <option key={option} value={option}>{option}</option>
-                        ))}
-                    </select>
-                </label>
-            );
-        };
-        
-        const exportCsv = (rows) => {
-            const headers = ["Date", "Employé", "Département", "Statut", "Arrivée", "Départ", "Heures", "Retard minutes", "Heures sup", "Type congé"];
-            const csv = [
-                headers.join(","),
-                ...rows.map((row) => [
-                    row.date,
-                    row.name,
-                    row.dept,
-                    row.status,
-                    row.arrival,
-                    row.departure,
-                    row.hours,
-                    row.lateMinutes,
-                    row.overtime,
-                    row.leaveType,
-                ].map((value) => \`"\${String(value).replaceAll('"', '""')}"\`).join(",")),
-            ].join("\\n");
-            
-            const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "presence-employes.csv";
-            a.click();
-            URL.revokeObjectURL(url);
-        };
-        
-        const EmployeeAttendanceApp = () => {
-            const [records, setRecords] = useState(initialAttendance);
-            const [department, setDepartment] = useState("Tous");
-            const [status, setStatus] = useState("Tous");
-            const [leaveType, setLeaveType] = useState("Tous");
-            const [search, setSearch] = useState("");
-            const [newRecord, setNewRecord] = useState({
-                date: "2026-05-31",
-                name: "",
-                dept: "IT",
-                status: "Présent",
-                lateMinutes: 0,
-                hours: 8,
-                overtime: 0,
-                leaveType: "—",
-            });
-            
-            const filtered = useMemo(() => records.filter((row) => {
-                const byDept = department === "Tous" || row.dept === department;
-                const byStatus = status === "Tous" || row.status === status;
-                const byLeave = leaveType === "Tous" || row.leaveType === leaveType;
-                const bySearch = row.name.toLowerCase().includes(search.toLowerCase()) || row.dept.toLowerCase().includes(search.toLowerCase());
-                return byDept && byStatus && byLeave && bySearch;
-            }), [records, department, status, leaveType, search]);
-            
-            const metrics = useMemo(() => {
-                const uniqueEmployees = new Set(filtered.map((row) => row.name)).size;
-                const present = filtered.filter((row) => row.status === "Présent" || row.status === "En retard").length;
-                const absent = filtered.filter((row) => row.status === "Absent").length;
-                const late = filtered.filter((row) => row.status === "En retard").length;
-                const overtime = filtered.reduce((sum, row) => sum + row.overtime, 0);
-                const attendanceRate = present + absent ? (present / (present + absent)) * 100 : 0;
-                const avgHours = present ? filtered.reduce((sum, row) => sum + row.hours, 0) / present : 0;
-                const totalLateMinutes = filtered.reduce((sum, row) => sum + Number(row.lateMinutes), 0);
-                return { uniqueEmployees, present, absent, late, overtime, attendanceRate, avgHours, totalLateMinutes };
-            }, [filtered]);
-            
-            const dailyTrend = useMemo(() => days.map((day) => {
-                const rows = filtered.filter((row) => row.day === day || Number(row.date.slice(-2)) === day);
-                return {
-                    day: \`\${day} Mai\`,
-                    present: rows.filter((row) => row.status === "Présent" || row.status === "En retard").length,
-                    absent: rows.filter((row) => row.status === "Absent").length,
-                    late: rows.filter((row) => row.status === "En retard").length,
-                    lateMinutes: rows.reduce((sum, row) => sum + Number(row.lateMinutes), 0),
-                };
-            }), [filtered]);
-            
-            const addRecord = () => {
-                if (!newRecord.name.trim()) return;
-                const row = {
-                    ...newRecord,
-                    id: \`custom-\${Date.now()}\`,
-                    employeeId: Date.now(),
-                    day: Number(newRecord.date.slice(-2)),
-                    arrival: newRecord.status === "Absent" ? "—" : newRecord.lateMinutes > 0 ? "08:20" : "07:55",
-                    departure: newRecord.status === "Absent" ? "—" : "17:00",
-                    lateMinutes: Number(newRecord.lateMinutes),
-                    hours: newRecord.status === "Absent" ? 0 : Number(newRecord.hours),
-                    overtime: Number(newRecord.overtime),
-                    leaveType: newRecord.status === "Absent" ? newRecord.leaveType : "—",
-                };
-                setRecords((current) => [row, ...current]);
-                setNewRecord({ ...newRecord, name: "", lateMinutes: 0, hours: 8, overtime: 0 });
-            };
-            
-            const removeRecord = (id) => setRecords((current) => current.filter((row) => row.id !== id));
-            
-            return (
-                <div className="min-h-screen bg-[#03070d] p-4 md:p-6">
-                    <div className="bg-gradient-radial"></div>
-                    
-                    <div className="relative mx-auto max-w-[1600px] grid gap-5 xl:grid-cols-[280px_1fr]">
-                        {/* Sidebar */}
-                        <aside className="rounded-3xl border border-white/10 bg-[#06111b]/95 p-5 shadow-2xl shadow-black/30">
-                            <div className="flex items-center gap-3">
-                                <div className="rounded-2xl bg-lime-500/15 p-3 text-lime-400">
-                                    {React.createElement(Users, { size: 42 })}
-                                </div>
-                                <div>
-                                    <h1 className="text-2xl font-black leading-none tracking-tight">EMPLOYEE</h1>
-                                    <h2 className="text-2xl font-black leading-none tracking-tight text-lime-400">ATTENDANCE</h2>
-                                    <p className="mt-1 text-xs font-bold tracking-[0.45em] text-white/70">DASHBOARD</p>
-                                </div>
-                            </div>
-                            
-                            <div className="mt-8 space-y-2">
-                                {[
-                                    [Home, "Overview"],
-                                    [CalendarDays, "Daily Attendance"],
-                                    [Users, "Employees"],
-                                    [Building2, "Departments"],
-                                    [ClipboardList, "Leave Analytics"],
-                                    [BarChart3, "Reports"],
-                                ].map(([Icon, label], index) => (
-                                    <button key={label} className={\`flex w-full items-center gap-4 rounded-xl px-4 py-3 text-left font-semibold transition \${index === 0 ? "bg-lime-500 text-white" : "text-white/80 hover:bg-white/5"}\`}>
-                                        {React.createElement(Icon, { size: 22 })}
-                                        {label}
-                                    </button>
-                                ))}
-                            </div>
-                            
-                            <div className="mt-8 border-t border-white/10 pt-6">
-                                <h3 className="mb-4 text-lg font-black text-lime-400">Filtres</h3>
-                                <div className="space-y-4">
-                                    <Select label="Département" value={department} onChange={setDepartment} options={departments} />
-                                    <Select label="Statut" value={status} onChange={setStatus} options={statuses} />
-                                    <Select label="Type de congé" value={leaveType} onChange={setLeaveType} options={leaveTypes} />
-                                    <button
-                                        onClick={() => { setDepartment("Tous"); setStatus("Tous"); setLeaveType("Tous"); setSearch(""); }}
-                                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-lime-400/30 bg-lime-400/10 px-4 py-3 font-bold text-lime-300 transition hover:bg-lime-400/20"
-                                    >
-                                        {React.createElement(Filter, { size: 18 })} Réinitialiser
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-4">
-                                <div className="flex items-center gap-3 text-lime-400">
-                                    {React.createElement(CalendarDays)}
-                                    <span className="font-bold text-white">Dernière mise à jour</span>
-                                </div>
-                                <p className="mt-3 text-sm text-white/80">31 mai 2026 · 10:30</p>
-                            </div>
-                        </aside>
-                        
-                        {/* Main Content */}
-                        <main className="space-y-5">
-                            <header className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-[#06111b]/80 p-4 shadow-2xl shadow-black/20 md:flex-row md:items-center md:justify-between">
-                                <div>
-                                    <p className="text-sm font-semibold uppercase tracking-widest text-lime-400">Mini logiciel RH</p>
-                                    <h2 className="mt-1 text-3xl font-black tracking-tight md:text-4xl">Tableau de bord de présence</h2>
-                                </div>
-                                <div className="flex flex-col gap-3 sm:flex-row">
-                                    <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
-                                        {React.createElement(CalendarDays, { size: 22 })}
-                                        <div>
-                                            <p className="text-xs text-white/60">Période</p>
-                                            <p className="font-bold">Mai 01 – Mai 31, 2026</p>
-                                        </div>
-                                    </div>
-                                    <button onClick={() => exportCsv(filtered)} className="flex items-center justify-center gap-2 rounded-2xl border border-lime-400/30 bg-lime-500/10 px-5 py-3 font-bold text-lime-300 transition hover:bg-lime-500/20">
-                                        {React.createElement(Download, { size: 18 })} Export CSV
-                                    </button>
-                                </div>
-                            </header>
-                            
-                            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
-                                <StatCard title="Employés" value={metrics.uniqueEmployees} subtitle="Collaborateurs uniques" icon={Users} tone="green" />
-                                <StatCard title="Présences" value={formatNumber(metrics.present)} subtitle="Présents + retards" icon={UserCheck} tone="green" />
-                                <StatCard title="Absences" value={formatNumber(metrics.absent)} subtitle="Absences enregistrées" icon={UserX} tone="red" />
-                                <StatCard title="Retards" value={formatNumber(metrics.late)} subtitle={\`\${metrics.totalLateMinutes} minutes au total\`} icon={Clock3} tone="orange" />
-                                <StatCard title="Heures sup" value={metrics.overtime.toFixed(1)} subtitle="Cumul période" icon={Timer} tone="blue" />
-                                <StatCard title="Taux présence" value={\`\${metrics.attendanceRate.toFixed(1)}%\`} subtitle="Performance globale" icon={PieChart} tone="green" />
-                            </section>
-                            
-                            <Panel title="Liste des présences">
-                                <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                                    <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#06101a] px-4 py-3 md:w-[420px]">
-                                        {React.createElement(Search, { size: 18, className: "text-white/50" })}
-                                        <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher employé ou département..." className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/40" />
-                                    </div>
-                                    <div className="flex items-center gap-4 text-sm text-white/70">
-                                        <span className="flex items-center gap-2">{React.createElement(Moon, { size: 16 })} Mode sombre premium</span>
-                                        <span className="flex items-center gap-2">{React.createElement(FileSpreadsheet, { size: 16 })} {filtered.length} lignes</span>
-                                    </div>
-                                </div>
-                                <div className="overflow-hidden rounded-2xl border border-white/10">
-                                    <div className="max-h-[360px] overflow-auto">
-                                        <table className="w-full min-w-[980px] border-collapse text-left text-sm">
-                                            <thead className="sticky-table-header text-xs uppercase tracking-wider text-white/60">
-                                                <tr>
-                                                    <th className="p-4">Date</th>
-                                                    <th className="p-4">Employé</th>
-                                                    <th className="p-4">Département</th>
-                                                    <th className="p-4">Statut</th>
-                                                    <th className="p-4">Arrivée</th>
-                                                    <th className="p-4">Heures</th>
-                                                    <th className="p-4">Retard</th>
-                                                    <th className="p-4">Congé</th>
-                                                    <th className="p-4">Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {filtered.slice(0, 80).map((row) => (
-                                                    <tr key={row.id} className="border-t border-white/5 transition hover:bg-white/5">
-                                                        <td className="p-4 text-white/70">{row.date}</td>
-                                                        <td className="p-4 font-bold text-white">{row.name}</td>
-                                                        <td className="p-4 text-white/80">{row.dept}</td>
-                                                        <td className="p-4">
-                                                            <span className={\`rounded-full px-3 py-1 text-xs font-black \${row.status === "Présent" ? "bg-lime-400/15 text-lime-300" : row.status === "Absent" ? "bg-red-400/15 text-red-300" : "bg-orange-400/15 text-orange-300"}\`}>{row.status}</span>
-                                                        </td>
-                                                        <td className="p-4 text-white/70">{row.arrival}</td>
-                                                        <td className="p-4 text-white/70">{row.hours}</td>
-                                                        <td className="p-4 text-white/70">{row.lateMinutes} min</td>
-                                                        <td className="p-4 text-white/70">{row.leaveType}</td>
-                                                        <td className="p-4">
-                                                            <button onClick={() => removeRecord(row.id)} className="rounded-lg p-2 text-white/45 transition hover:bg-red-400/10 hover:text-red-300">{React.createElement(Trash2, { size: 16 })}</button>
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </Panel>
-                            
-                            <Panel title="Ajouter une présence">
-                                <div className="grid gap-3 md:grid-cols-2">
-                                    <input className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" placeholder="Nom employé" value={newRecord.name} onChange={(e) => setNewRecord({ ...newRecord, name: e.target.value })} />
-                                    <input type="date" className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" value={newRecord.date} onChange={(e) => setNewRecord({ ...newRecord, date: e.target.value })} />
-                                    <select className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" value={newRecord.dept} onChange={(e) => setNewRecord({ ...newRecord, dept: e.target.value })}>
-                                        {departments.filter((d) => d !== "Tous").map((d) => <option key={d}>{d}</option>)}
-                                    </select>
-                                    <select className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" value={newRecord.status} onChange={(e) => setNewRecord({ ...newRecord, status: e.target.value })}>
-                                        {statuses.filter((s) => s !== "Tous").map((s) => <option key={s}>{s}</option>)}
-                                    </select>
-                                    <input type="number" className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" placeholder="Minutes retard" value={newRecord.lateMinutes} onChange={(e) => setNewRecord({ ...newRecord, lateMinutes: e.target.value })} />
-                                    <input type="number" step="0.1" className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" placeholder="Heures travaillées" value={newRecord.hours} onChange={(e) => setNewRecord({ ...newRecord, hours: e.target.value })} />
-                                    <input type="number" step="0.1" className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" placeholder="Heures sup" value={newRecord.overtime} onChange={(e) => setNewRecord({ ...newRecord, overtime: e.target.value })} />
-                                    <select className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" value={newRecord.leaveType} onChange={(e) => setNewRecord({ ...newRecord, leaveType: e.target.value })}>
-                                        <option>—</option>
-                                        {leaveTypes.filter((t) => t !== "Tous").map((t) => <option key={t}>{t}</option>)}
-                                    </select>
-                                </div>
-                                <button onClick={addRecord} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-lime-500 px-4 py-3 font-black text-white transition hover:bg-lime-400">
-                                    {React.createElement(Plus, { size: 18 })} Ajouter l’entrée
-                                </button>
-                            </Panel>
-                        </main>
-                    </div>
+                      <Filter size={18} /> Réinitialiser
+                    </button>
+                  </div>
                 </div>
-            );
-        };
-        
-        ReactDOM.render(<EmployeeAttendanceApp />, document.getElementById('root'));
+
+                <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div className="flex items-center gap-3 text-lime-400">
+                    <CalendarDays />
+                    <span className="font-bold text-white">Dernière mise à jour</span>
+                  </div>
+                  <p className="mt-3 text-sm text-white/80">31 mai 2026 · 10:30</p>
+                </div>
+              </aside>
+
+              <main className="space-y-5">
+                <header className="flex flex-col gap-4 rounded-3xl border border-white/10 bg-[#06111b]/80 p-4 shadow-2xl shadow-black/20 md:flex-row md:items-center md:justify-between">
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-widest text-lime-400">Mini logiciel RH</p>
+                    <h2 className="mt-1 text-3xl font-black tracking-tight md:text-4xl">Tableau de bord de présence</h2>
+                  </div>
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-black/20 px-4 py-3">
+                      <CalendarDays size={22} />
+                      <div>
+                        <p className="text-xs text-white/60">Période</p>
+                        <p className="font-bold">Mai 01 – Mai 31, 2026</p>
+                      </div>
+                    </div>
+                    <button onClick={() => exportCsv(filtered)} className="flex items-center justify-center gap-2 rounded-2xl border border-lime-400/30 bg-lime-500/10 px-5 py-3 font-bold text-lime-300 transition hover:bg-lime-500/20">
+                      <Download size={18} /> Export CSV
+                    </button>
+                  </div>
+                </header>
+
+                <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-6">
+                  <StatCard title="Employés" value={metrics.uniqueEmployees} subtitle="Collaborateurs uniques" icon={Users} tone="green" />
+                  <StatCard title="Présences" value={formatNumber(metrics.present)} subtitle="Présents + retards" icon={UserCheck} tone="green" />
+                  <StatCard title="Absences" value={formatNumber(metrics.absent)} subtitle="Absences enregistrées" icon={UserX} tone="red" />
+                  <StatCard title="Retards" value={formatNumber(metrics.late)} subtitle={`${metrics.totalLateMinutes} min au total`} icon={Clock3} tone="orange" />
+                  <StatCard title="Heures sup" value={metrics.overtime.toFixed(1)} subtitle="Cumul période" icon={Timer} tone="blue" />
+                  <StatCard title="Taux présence" value={`${metrics.attendanceRate.toFixed(1)}%`} subtitle="Performance globale" icon={PieIcon} tone="green" />
+                </section>
+
+                <section className="grid gap-5 xl:grid-cols-[1.25fr_1fr_0.75fr]">
+                  <Panel title="Tendance de présence quotidienne">
+                    <div className="h-[300px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={dailyTrend} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+                          <CartesianGrid stroke="rgba(255,255,255,0.07)" />
+                          <XAxis dataKey="day" tick={{ fill: "rgba(255,255,255,0.65)", fontSize: 12 }} interval={5} />
+                          <YAxis tick={{ fill: "rgba(255,255,255,0.65)", fontSize: 12 }} />
+                          <Tooltip contentStyle={{ background: "#07111c", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 14, color: "#fff" }} />
+                          <Line type="monotone" dataKey="present" name="Présent" stroke={colors.green} strokeWidth={3} dot={false} />
+                          <Line type="monotone" dataKey="absent" name="Absent" stroke={colors.red} strokeWidth={3} dot={false} />
+                          <Line type="monotone" dataKey="late" name="Retard" stroke={colors.orange} strokeWidth={3} dot={false} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </Panel>
+
+                  <Panel title="Présence par département">
+                    <div className="h-[300px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <BarChart data={departmentData} layout="vertical" margin={{ top: 0, right: 30, left: 15, bottom: 0 }}>
+                          <XAxis type="number" domain={[0, 100]} hide />
+                          <YAxis type="category" dataKey="dept" tick={{ fill: "rgba(255,255,255,0.76)", fontSize: 12 }} width={90} />
+                          <Tooltip contentStyle={{ background: "#07111c", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 14, color: "#fff" }} formatter={(v) => `${v}%`} />
+                          <Bar dataKey="rate" fill={colors.green} radius={[0, 10, 10, 0]} barSize={16} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  </Panel>
+
+                  <Panel title="Présent vs absent">
+                    <div className="grid place-items-center">
+                      <div className="h-[220px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RPieChart>
+                            <Pie data={presentAbsent} innerRadius={58} outerRadius={92} dataKey="value" paddingAngle={2}>
+                              {presentAbsent.map((e) => <Cell key={e.name} fill={e.color} />)}
+                            </Pie>
+                            <Tooltip contentStyle={{ background: "#07111c", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 14, color: "#fff" }} />
+                          </RPieChart>
+                        </ResponsiveContainer>
+                      </div>
+                      <div className="flex gap-5 text-sm">
+                        <span className="text-lime-400">● Présent {metrics.present}</span>
+                        <span className="text-red-400">● Absent {metrics.absent}</span>
+                      </div>
+                    </div>
+                  </Panel>
+                </section>
+
+                <section className="grid gap-5 xl:grid-cols-[0.9fr_1.3fr_1fr]">
+                  <Panel title="Analyse des minutes de retard">
+                    <div className="h-[260px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={dailyTrend} margin={{ top: 10, right: 20, left: -20, bottom: 0 }}>
+                          <CartesianGrid stroke="rgba(255,255,255,0.07)" />
+                          <XAxis dataKey="day" tick={{ fill: "rgba(255,255,255,0.65)", fontSize: 12 }} interval={6} />
+                          <YAxis tick={{ fill: "rgba(255,255,255,0.65)", fontSize: 12 }} />
+                          <Tooltip contentStyle={{ background: "#07111c", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 14, color: "#fff" }} />
+                          <Line type="monotone" dataKey="lateMinutes" name="Minutes" stroke={colors.orange} strokeWidth={3} dot={{ r: 3 }} />
+                        </LineChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className="mt-2 rounded-2xl border border-orange-400/20 bg-orange-400/10 p-4 text-center">
+                      <p className="text-sm text-orange-200">Total minutes retard</p>
+                      <p className="text-3xl font-black text-orange-300">{formatNumber(metrics.totalLateMinutes)}</p>
+                    </div>
+                  </Panel>
+
+                  <Panel title="Ajouter une présence">
+                    <div className="grid gap-3 md:grid-cols-2">
+                      <input className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" placeholder="Nom employé" value={newRecord.name} onChange={(e) => setNewRecord({ ...newRecord, name: e.target.value })} />
+                      <input type="date" className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" value={newRecord.date} onChange={(e) => setNewRecord({ ...newRecord, date: e.target.value })} />
+                      <select className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" value={newRecord.dept} onChange={(e) => setNewRecord({ ...newRecord, dept: e.target.value })}>
+                        {departments.filter((d) => d !== "Tous").map((d) => <option key={d}>{d}</option>)}
+                      </select>
+                      <select className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" value={newRecord.status} onChange={(e) => setNewRecord({ ...newRecord, status: e.target.value })}>
+                        {statuses.filter((s) => s !== "Tous").map((s) => <option key={s}>{s}</option>)}
+                      </select>
+                      <input type="number" className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" placeholder="Min retard" value={newRecord.lateMinutes} onChange={(e) => setNewRecord({ ...newRecord, lateMinutes: e.target.value })} />
+                      <input type="number" step="0.1" className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" placeholder="Heures" value={newRecord.hours} onChange={(e) => setNewRecord({ ...newRecord, hours: e.target.value })} />
+                      <input type="number" step="0.1" className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" placeholder="Heures sup" value={newRecord.overtime} onChange={(e) => setNewRecord({ ...newRecord, overtime: e.target.value })} />
+                      <select className="rounded-xl border border-white/10 bg-[#06101a] px-3 py-3 text-white outline-none focus:border-lime-400" value={newRecord.leaveType} onChange={(e) => setNewRecord({ ...newRecord, leaveType: e.target.value })}>
+                        <option>—</option>
+                        {leaveTypes.filter((t) => t !== "Tous").map((t) => <option key={t}>{t}</option>)}
+                      </select>
+                    </div>
+                    <button onClick={addRecord} className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-lime-500 px-4 py-3 font-black text-white transition hover:bg-lime-400">
+                      <Plus size={18} /> Ajouter
+                    </button>
+                  </Panel>
+
+                  <Panel title="Types de congés">
+                    <div className="h-[220px]">
+                      <ResponsiveContainer width="100%" height="100%">
+                        <RPieChart>
+                          <Pie data={leaveData} innerRadius={58} outerRadius={92} dataKey="value" paddingAngle={2}>
+                            {leaveData.map((e) => <Cell key={e.name} fill={e.color} />)}
+                          </Pie>
+                          <Tooltip contentStyle={{ background: "#07111c", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 14, color: "#fff" }} />
+                        </RPieChart>
+                      </ResponsiveContainer>
+                    </div>
+                    <div className="space-y-2 text-sm">
+                      {leaveData.map((item) => (
+                        <div key={item.name} className="flex items-center justify-between rounded-xl bg-white/5 px-3 py-2">
+                          <span><span style={{ color: item.color }}>●</span> {item.name}</span>
+                          <strong>{item.value}</strong>
+                        </div>
+                      ))}
+                    </div>
+                  </Panel>
+                </section>
+
+                <Panel title="Liste des présences">
+                  <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                    <div className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#06101a] px-4 py-3 md:w-[420px]">
+                      <Search size={18} className="text-white/50" />
+                      <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Rechercher employé ou département..." className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/40" />
+                    </div>
+                    <div className="flex items-center gap-4 text-sm text-white/70">
+                      <span className="flex items-center gap-2"><Moon size={16} /> Mode sombre premium</span>
+                      <span className="flex items-center gap-2"><FileSpreadsheet size={16} /> {filtered.length} lignes</span>
+                    </div>
+                  </div>
+                  <div className="overflow-hidden rounded-2xl border border-white/10">
+                    <div className="max-h-[360px] overflow-auto">
+                      <table className="w-full min-w-[980px] border-collapse text-left text-sm">
+                        <thead className="sticky top-0 bg-[#0b1a28] text-xs uppercase tracking-wider text-white/60">
+                          <tr>
+                            <th className="p-4">Date</th><th className="p-4">Employé</th><th className="p-4">Département</th>
+                            <th className="p-4">Statut</th><th className="p-4">Arrivée</th><th className="p-4">Heures</th>
+                            <th className="p-4">Retard</th><th className="p-4">Congé</th><th className="p-4">Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {filtered.slice(0, 80).map((row) => (
+                            <tr key={row.id} className="border-t border-white/5 transition hover:bg-white/5">
+                              <td className="p-4 text-white/70">{row.date}</td>
+                              <td className="p-4 font-bold text-white">{row.name}</td>
+                              <td className="p-4 text-white/80">{row.dept}</td>
+                              <td className="p-4">
+                                <span className={`rounded-full px-3 py-1 text-xs font-black ${row.status === "Présent" ? "bg-lime-400/15 text-lime-300" : row.status === "Absent" ? "bg-red-400/15 text-red-300" : "bg-orange-400/15 text-orange-300"}`}>{row.status}</span>
+                              </td>
+                              <td className="p-4 text-white/70">{row.arrival}</td>
+                              <td className="p-4 text-white/70">{row.hours}</td>
+                              <td className="p-4 text-white/70">{row.lateMinutes} min</td>
+                              <td className="p-4 text-white/70">{row.leaveType}</td>
+                              <td className="p-4">
+                                <button onClick={() => removeRecord(row.id)} className="rounded-lg p-2 text-white/45 transition hover:bg-red-400/10 hover:text-red-300"><Trash2 size={16} /></button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </Panel>
+              </main>
+            </div>
+          </div>
+        );
+      }
+
+      const loader = document.getElementById("loader");
+      if (loader) loader.remove();
+      createRoot(document.getElementById("root")).render(<App />);
     </script>
 </body>
 </html>
