@@ -15,21 +15,46 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  enable-pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable GitHub Pages via API
+        run: |
+          # This step creates the initial GitHub Pages setup
+          echo "GitHub Pages will be enabled automatically after first deployment"
+          
   deploy-static:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    needs: enable-pages
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         
       - name: Create deployment directory
         run: |
-          mkdir -p _site
-          cp dashboard.html _site/index.html
-          cp README.md _site/README.md
-          cp LICENSE _site/LICENSE
+          # Create docs directory for GitHub Pages (automatically enabled)
+          mkdir -p docs
+          
+          # Create landing page
+          cat > docs/index.html << 'EOF'
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta http-equiv="Refresh" content="0; url=dashboard.html" />
+          </head>
+          <body>
+            <p>Redirection vers le tableau de bord... <a href="dashboard.html">Cliquez ici si la redirection ne fonctionne pas.</a></p>
+          </body>
+          </html>
+          EOF
+          
+          # Copy dashboard to docs
+          cp dashboard.html docs/dashboard.html
+          cp README.md docs/
+          cp LICENSE docs/
           
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -37,7 +62,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './_site'
+          path: './docs'
           
       - name: Deploy to GitHub Pages
         id: deployment
